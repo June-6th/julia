@@ -2070,7 +2070,7 @@ void jl_init_types(void) JL_GC_DISABLED
     jl_code_info_type =
         jl_new_datatype(jl_symbol("CodeInfo"), core,
                         jl_any_type, jl_emptysvec,
-                        jl_perm_symsvec(18,
+                        jl_perm_symsvec(19,
                             "code",
                             "codelocs",
                             "ssavaluetypes",
@@ -2088,8 +2088,9 @@ void jl_init_types(void) JL_GC_DISABLED
                             "inferred",
                             "inlineable",
                             "propagate_inbounds",
-                            "pure"),
-                        jl_svec(18,
+                            "pure",
+                            "hide_in_stacktrace"),
+                        jl_svec(19,
                             jl_array_any_type,
                             jl_any_type,
                             jl_any_type,
@@ -2107,13 +2108,14 @@ void jl_init_types(void) JL_GC_DISABLED
                             jl_bool_type,
                             jl_bool_type,
                             jl_bool_type,
+                            jl_bool_type,
                             jl_bool_type),
-                        0, 1, 18);
+                        0, 1, 19);
 
     jl_method_type =
         jl_new_datatype(jl_symbol("Method"), core,
                         jl_any_type, jl_emptysvec,
-                        jl_perm_symsvec(21,
+                        jl_perm_symsvec(22,
                             "name",
                             "module",
                             "file",
@@ -2134,8 +2136,9 @@ void jl_init_types(void) JL_GC_DISABLED
                             "called",
                             "nospecialize",
                             "isva",
-                            "pure"),
-                        jl_svec(21,
+                            "pure",
+                            "hide_in_stacktrace"),
+                        jl_svec(22,
                             jl_symbol_type,
                             jl_module_type,
                             jl_symbol_type,
@@ -2155,6 +2158,7 @@ void jl_init_types(void) JL_GC_DISABLED
                             jl_int32_type,
                             jl_int32_type,
                             jl_int32_type,
+                            jl_bool_type,
                             jl_bool_type,
                             jl_bool_type),
                         0, 1, 11);

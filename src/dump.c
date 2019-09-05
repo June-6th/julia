@@ -2507,7 +2507,8 @@ JL_DLLEXPORT jl_array_t *jl_compress_ast(jl_method_t *m, jl_code_info_t *code)
         NULL
     };
 
-    uint8_t flags = (code->inferred << 3)
+    uint8_t flags = (code->hide_in_stacktrace << 4)
+                  | (code->inferred << 3)
                   | (code->inlineable << 2)
                   | (code->propagate_inbounds << 1)
                   | (code->pure << 0);
@@ -2593,6 +2594,7 @@ JL_DLLEXPORT jl_code_info_t *jl_uncompress_ast(jl_method_t *m, jl_code_instance_
 
     jl_code_info_t *code = jl_new_code_info_uninit();
     uint8_t flags = read_uint8(s.s);
+    code->hide_in_stacktrace = !!(flags & (1 << 4));
     code->inferred = !!(flags & (1 << 3));
     code->inlineable = !!(flags & (1 << 2));
     code->propagate_inbounds = !!(flags & (1 << 1));

@@ -265,6 +265,7 @@ typedef struct _jl_code_info_t {
     uint8_t inlineable;
     uint8_t propagate_inbounds;
     uint8_t pure;
+    uint8_t hide_in_stacktrace;
 } jl_code_info_t;
 
 // This type describes a single method definition, and stores data
@@ -305,6 +306,7 @@ typedef struct _jl_method_t {
     int32_t nospecialize;  // bit flags: which arguments should not be specialized
     uint8_t isva;
     uint8_t pure;
+    uint8_t hide_in_stacktrace;
 
 // hidden fields:
     // lock for modifications to the method

@@ -30,7 +30,10 @@ throw
 
 Raise an `ErrorException` with the given message.
 """
-error(s::AbstractString) = throw(ErrorException(s))
+function error(s::AbstractString)
+    @_hide_in_stacktrace_meta
+    throw(ErrorException(s))
+end
 
 """
     error(msg...)
@@ -39,17 +42,31 @@ Raise an `ErrorException` with the given message.
 """
 function error(s::Vararg{Any,N}) where {N}
     @_noinline_meta
+    @_hide_in_stacktrace_meta
     throw(ErrorException(Main.Base.string(s...)))
 end
 
 """
-    rethrow([e])
+    rethrow()
 
-Throw an object without changing the current exception backtrace. The default argument is
-the current exception (if called within a `catch` block).
+Rethrow the current exception from within a catch block.
+
+!!! warning
+    The form `rethrow(e)` is also allowed and will throw an object `e` from a
+    catch block without changing the current exception backtrace. However,
+    this can be confusing and in Julia 1.1 you are encouraged to instead throw
+    a new exception using `throw(e)`. The exception stack system will then
+    track both the root cause and newly thrown exceptions and associate them to
+    the correct backtraces.
 """
-rethrow() = ccall(:jl_rethrow, Bottom, ())
-rethrow(e) = ccall(:jl_rethrow_other, Bottom, (Any,), e)
+function rethrow()
+    @_hide_in_stacktrace_meta
+    ccall(:jl_rethrow, Bottom, ())
+end
+function rethrow(e)  # deprecated
+    @_hide_in_stacktrace_meta
+    ccall(:jl_rethrow_other, Bottom, (Any,), e)
+end
 
 struct InterpreterIP
     code::Union{CodeInfo,Core.MethodInstance,Nothing}

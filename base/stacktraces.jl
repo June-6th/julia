@@ -96,6 +96,47 @@ function hash(frame::StackFrame, h::UInt)
     return h
 end
 
+"""
+Classify frame according to relevance level
+
+Importance level 0 is intended to be the default minimum which will be shown to
+users in stack traces.
+"""
+function frame_importance(frame::StackFrame; fallback=(frame,modroot)->1)
+    if frame.from_c
+        return -2
+    end
+    mod = nothing
+    if frame.linfo isa Core.MethodInstance
+        def = frame.linfo.def
+        if def isa Method
+            if def.hide_in_stacktrace
+                # This overrides the module heuristic information
+                return -1
+            end
+            mod = def.module
+        elseif def isa Module
+            # Top-level thunk (TODO: test this!)
+            mod = def
+        end
+    end
+    if mod !== nothing
+        modroot = Base.moduleroot(mod)
+        # TODO: Should Core be negative by default ?
+        if modroot == Base || modroot == Core
+            return 0
+        elseif modroot == Main
+            return 3
+        else
+            return fallback(frame, modroot)
+        # TODO: dev'd modules ??
+        #   Can we even detect this in a reasonable way from Base or do we need
+        #   to depend on Pkg?
+        #   return 2
+        end
+    end
+    return 0
+end
 
 """
     lookup(pointer::Union{Ptr{Cvoid}, UInt}) -> Vector{StackFrame}
@@ -163,7 +204,7 @@ lookup(s::Tuple{StackFrame,Int}) = StackFrame[s[1]]
 
 Get a backtrace object for the current program point.
 """
-function Base.backtrace()
+Base.@hide_in_stacktrace function Base.backtrace()
     bt, bt2 = ccall(:jl_backtrace_from_here, Any, (Int32,), false)
     if length(bt) > 2
         # remove frames for jl_backtrace_from_here and backtrace()
@@ -202,9 +243,6 @@ function stacktrace(trace::Vector{<:Union{Base.InterpreterIP,Ptr{Cvoid}}}, c_fun
         filter!(frame -> !frame.from_c, stack)
     end
 
-    # Remove frame for this function (and any functions called by this function).
-    remove_frames!(stack, :stacktrace)
-
     # is there a better way?  the func symbol has a number suffix which changes.
     # it's possible that no test is needed and we could just popfirst! all the time.
     # this line was added to PR #16213 because otherwise stacktrace() != stacktrace(false).
@@ -213,7 +251,7 @@ function stacktrace(trace::Vector{<:Union{Base.InterpreterIP,Ptr{Cvoid}}}, c_fun
     stack
 end
 
-stacktrace(c_funcs::Bool=false) = stacktrace(backtrace(), c_funcs)
+Base.@hide_in_stacktrace stacktrace(c_funcs::Bool=false) = stacktrace(backtrace(), c_funcs)
 
 """
     remove_frames!(stack::StackTrace, name::Symbol)

@@ -825,6 +825,8 @@ void _julia_init(JL_IMAGE_SEARCH rel)
 
     if (jl_options.handle_signals == JL_OPTIONS_HANDLE_SIGNALS_ON)
         jl_install_sigint_handler();
+
+    //jl_static_show(JL_STDERR, jl_code_info_type->name->names);
 }
 
 static jl_value_t *core(const char *name)
