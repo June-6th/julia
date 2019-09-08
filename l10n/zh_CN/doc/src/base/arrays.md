@@ -1,6 +1,6 @@
-# [Arrays](@id lib-arrays)
+# [数组](@id lib-arrays)
 
-## Constructors and Types
+## 构造函数和类型
 
 ```@docs
 Core.AbstractArray
@@ -60,7 +60,7 @@ Base.stride
 Base.strides
 ```
 
-## Broadcast and vectorization
+## 广播和向量化
 
 See also the [dot syntax for vectorizing functions](@ref man-vectorized); for example, `f.(args...)` implicitly calls `broadcast(f, args...)`. Rather than relying on "vectorized" methods of functions like `sin` to operate on arrays, you should use `sin.(a)` to vectorize via `broadcast`.
 
@@ -80,7 +80,7 @@ Base.Broadcast.DefaultArrayStyle
 Base.Broadcast.broadcastable
 ```
 
-## Indexing and assignment
+## 索引和赋值
 
 ```@docs
 Base.getindex(::AbstractArray, ::Any...)
