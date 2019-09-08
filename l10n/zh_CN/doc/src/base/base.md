@@ -145,7 +145,7 @@ Base.fieldnames
 Base.fieldname
 ```
 
-### Memory layout
+### 内存布局
 
 ```@docs
 Base.sizeof(::Type)
