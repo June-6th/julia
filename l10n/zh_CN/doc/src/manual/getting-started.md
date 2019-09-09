@@ -1,4 +1,4 @@
-# [Getting Started](@id man-getting-started)
+# [入门](@id man-getting-started)
 
 Julia installation is straightforward, whether using precompiled binaries or compiling from source. Download and install Julia by following the instructions at <https://julialang.org/downloads/>.
 
