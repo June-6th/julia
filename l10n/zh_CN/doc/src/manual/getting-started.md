@@ -1,8 +1,8 @@
 # [入门](@id man-getting-started)
 
-Julia installation is straightforward, whether using precompiled binaries or compiling from source. Download and install Julia by following the instructions at <https://julialang.org/downloads/>.
+无论是使用预编译好的二进制程序，还是自己从源码编译，安装 Julia 都是一件很简单的事情。 请按照 <https://julialang.org/downloads/> 的提示来下载并安装 Julia。
 
-The easiest way to learn and experiment with Julia is by starting an interactive session (also known as a read-eval-print loop or "REPL") by double-clicking the Julia executable or running `julia` from the command line:
+启动一个交互式会话（也叫 REPL）是学习和尝试 Julia 最简单的方法。双击 Julia 的可执行文件或是从命令行运行 `julia` 就可以启动：
 
 ```@eval
 io = IOBuffer()
@@ -12,16 +12,16 @@ import Markdown
 Markdown.parse("```\n\$ julia\n\n$(banner)\njulia> 1 + 2\n3\n\njulia> ans\n3\n```")
 ```
 
-To exit the interactive session, type `CTRL-D` (press the Control/`^` key together with the `d` key), or type `exit()`. When run in interactive mode, `julia` displays a banner and prompts the user for input. Once the user has entered a complete expression, such as `1 + 2`, and hits enter, the interactive session evaluates the expression and shows its value. If an expression is entered into an interactive session with a trailing semicolon, its value is not shown. The variable `ans` is bound to the value of the last evaluated expression whether it is shown or not. The `ans` variable is only bound in interactive sessions, not when Julia code is run in other ways.
+输入 `CTRL-D`（同时按 `Ctrl` 键和 `d` 键）或 `exit()` 便可以退出交互式会话。 在交互式模式中，`julia` 会显示一条横幅并提示用户输入。 一旦用户输入了一段完整的代码（表达式），例如 `1 + 2`，然后按回车，交互式会话就会执行这段代码，并将结果显示出来。 如果输入的代码以分号结尾，那么结果将不会显示出来。 然而不管结果显示与否，变量 `ans` 总会存储上一次执行代码的结果， 需要注意的是，变量 `ans` 只在交互式会话中才有。
 
-To evaluate expressions written in a source file `file.jl`, write `include("file.jl")`.
+在交互式会话中，要运行写在源文件 `file.jl` 中的代码，只需输入 `include("file.jl")`。
 
-To run code in a file non-interactively, you can give it as the first argument to the `julia` command:
+如果想非交互式地执行文件中的代码，可以把文件名作为 `julia` 命令的第一个参数：
 
     $ julia script.jl arg1 arg2...
     
 
-As the example implies, the following command-line arguments to `julia` are interpreted as command-line arguments to the program `script.jl`, passed in the global constant `ARGS`. The name of the script itself is passed in as the global `PROGRAM_FILE`. Note that `ARGS` is also set when a Julia expression is given using the `-e` option on the command line (see the `julia` help output below) but `PROGRAM_FILE` will be empty. For example, to just print the arguments given to a script, you could do this:
+如这个例子所示，`julia` 后跟着的命令行参数会被作为程序 `script.jl` 的命令行参数。这些参数使用全局常量 `ARGS` 来传递， 脚本自身的名字会以全局变量 `PROGRAM_FILE` 传入。 注意当脚本以命令行里的 `-e` 选项输入时，`ARGS` 也会被设定（详见此页末尾列表）但是 `PROGRAM_FILE` 会是空的。 例如，要把一个脚本的输入参数显示出来，你可以这样做：
 
     $ julia -e 'println(PROGRAM_FILE); for x in ARGS; println(x); end' foo bar
     
@@ -29,7 +29,7 @@ As the example implies, the following command-line arguments to `julia` are inte
     bar
     
 
-Or you could put that code into a script and run it:
+或者你可以把代码写到一个脚本文件中再执行它：
 
     $ echo 'println(PROGRAM_FILE); for x in ARGS; println(x); end' > script.jl
     $ julia script.jl foo bar
@@ -38,14 +38,14 @@ Or you could put that code into a script and run it:
     bar
     
 
-The `--` delimiter can be used to separate command-line arguments intended for the script file from arguments intended for Julia:
+可以使用分隔符 `--` 将传给脚本文件的参数和给 Julia 本身的参数区分开：
 
     $ julia --color=yes -O -- foo.jl arg1 arg2..
     
 
-Julia can be started in parallel mode with either the `-p` or the `--machine-file` options. `-p n` will launch an additional `n` worker processes, while `--machine-file file` will launch a worker for each line in file `file`. The machines defined in `file` must be accessible via a password-less `ssh` login, with Julia installed at the same location as the current host. Each machine definition takes the form `[count*][user@]host[:port] [bind_addr[:port]]`. `user` defaults to current user, `port` to the standard ssh port. `count` is the number of workers to spawn on the node, and defaults to 1. The optional `bind-to bind_addr[:port]` specifies the IP address and port that other workers should use to connect to this worker.
+使用选项 `-p` 或者 `--machine-file` 可以在并行模式下启动 Julia。 `-p n` 会启动额外的 `n` 个 worker，使用 `--machine-file file` 会为 `file` 文件中的每一行启动一个 worker。 定义在 `file` 中的机器必须能够通过一个不需要密码的 `ssh` 登陆访问到，且 Julia 的安装位置需要和当前主机相同。 定义机器的格式为 `[count*][user@]host[:port] [bind_addr[:port]]`。 `user` 默认值是当前用户； `port` 默认值是标准 ssh 端口； `count` 是在这个节点上的 worker 的数量，默认是 1； 可选的 `bind-to bind_addr[:port]` 指定了其它 worker 访问当前 worker 应当使用的 IP 地址与端口。
 
-If you have code that you want executed whenever Julia is run, you can put it in `~/.julia/config/startup.jl`:
+要让 Julia 每次启动都自动执行一些代码，你可以把它们放在 `~/.julia/config/startup.jl` 中：
 
     $ echo 'println("Greetings! 你好! 안녕하세요?")' > ~/.julia/config/startup.jl
     $ julia
@@ -54,297 +54,300 @@ If you have code that you want executed whenever Julia is run, you can put it in
     ...
     
 
-There are various ways to run Julia code and provide options, similar to those available for the `perl` and `ruby` programs:
+和 `perl` 和 `ruby` 程序类似，还有很多种运行 Julia 代码的方式，运行代码时也有很多选项：
 
-    julia [switches] -- [programfile] [args...]Set 
+    julia [switches] -- [programfile] [args...]将 
 
 <dir>
-  as the home project/environment. The default @. option will search through parent directories until a Project.toml or JuliaProject.toml file is found.</td> </tr> 
+  将 
   
-  <tr>
-    <td align="left">
-      <code>-J</code>, <code>--sysimage &lt;file&gt;</code>
-    </td>
+  <dir>
+    设置为主项目/环境。 默认的 @. 选项将搜索父目录，直至找到 Project.toml 或 JuliaProject.toml 文件。</td> </tr> 
     
-    <td align="left">
-      Start up with the given system image file
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>-H</code>, <code>--home &lt;dir&gt;</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>-J</code>, <code>--sysimage &lt;file&gt;</code>
+      </td>
+      
+      <td align="left">
+        用指定的镜像文件（system image file）启动
+      </td>
+    </tr>
     
-    <td align="left">
-      Set location of <code>julia</code> executable
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--startup-file={yes\|no}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>-H</code>, <code>--home &lt;dir&gt;</code>
+      </td>
+      
+      <td align="left">
+        设置 <code>julia</code> 可执行文件的路径
+      </td>
+    </tr>
     
-    <td align="left">
-      Load <code>~/.julia/config/startup.jl</code>
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--handle-signals={yes\|no}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--startup-file={yes\|no}</code>
+      </td>
+      
+      <td align="left">
+        是否载入 <code>~/.julia/config/startup.jl</code>
+      </td>
+    </tr>
     
-    <td align="left">
-      Enable or disable Julia's default signal handlers
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--sysimage-native-code={yes\|no}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--handle-signals={yes\|no}</code>
+      </td>
+      
+      <td align="left">
+        开启或关闭 Julia 默认的 signal handlers
+      </td>
+    </tr>
     
-    <td align="left">
-      Use native code from system image if available
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--compiled-modules={yes\|no}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--sysimage-native-code={yes\|no}</code>
+      </td>
+      
+      <td align="left">
+        在可能的情况下，使用系统镜像里的原生代码
+      </td>
+    </tr>
     
-    <td align="left">
-      Enable or disable incremental precompilation of modules
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>-e</code>, <code>--eval &lt;expr&gt;</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--compiled-modules={yes\|no}</code>
+      </td>
+      
+      <td align="left">
+        开启或关闭 module 的增量预编译功能
+      </td>
+    </tr>
     
-    <td align="left">
-      Evaluate <code>&lt;expr&gt;</code>
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>-E</code>, <code>--print &lt;expr&gt;</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>-e</code>, <code>--eval &lt;expr&gt;</code>
+      </td>
+      
+      <td align="left">
+        执行 <code>&lt;expr&gt;</code>
+      </td>
+    </tr>
     
-    <td align="left">
-      Evaluate <code>&lt;expr&gt;</code> and display the result
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>-L</code>, <code>--load &lt;file&gt;</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>-E</code>, <code>--print &lt;expr&gt;</code>
+      </td>
+      
+      <td align="left">
+        执行 <code>&lt;expr&gt;</code> 并显示结果
+      </td>
+    </tr>
     
-    <td align="left">
-      Load <code>&lt;file&gt;</code> immediately on all processors
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>-p</code>, <code>--procs {N\|auto</code>}
-    </td>
+    <tr>
+      <td align="left">
+        <code>-L</code>, <code>--load &lt;file&gt;</code>
+      </td>
+      
+      <td align="left">
+        立即在所有进程中载入 <code>&lt;file&gt;</code>
+      </td>
+    </tr>
     
-    <td align="left">
-      Integer value N launches N additional local worker processes; <code>auto</code> launches as many workers as the number of local CPU threads (logical cores)
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--machine-file &lt;file&gt;</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>-p</code>, <code>--procs {N\|auto}</code>
+      </td>
+      
+      <td align="left">
+        这里的整数 N 表示启动 N 个额外的工作进程；<code>auto</code> 表示启动与 CPU 线程数目（logical cores）一样多的进程
+      </td>
+    </tr>
     
-    <td align="left">
-      Run processes on hosts listed in <code>&lt;file&gt;</code>
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>-i</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--machine-file &lt;file&gt;</code>
+      </td>
+      
+      <td align="left">
+        在 <code>&lt;file&gt;</code> 中列出的主机上运行进程
+      </td>
+    </tr>
     
-    <td align="left">
-      Interactive mode; REPL runs and <code>isinteractive()</code> is true
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>-q</code>, <code>--quiet</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>-i</code>
+      </td>
+      
+      <td align="left">
+        交互式模式；REPL 运行且 <code>isinteractive()</code> 为 true
+      </td>
+    </tr>
     
-    <td align="left">
-      Quiet startup: no banner, suppress REPL warnings
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--banner={yes\|no\|auto}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>-q</code>, <code>--quiet</code>
+      </td>
+      
+      <td align="left">
+        安静的启动；REPL 启动时无横幅，不显示警告
+      </td>
+    </tr>
     
-    <td align="left">
-      Enable or disable startup banner
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--color={yes\|no\|auto}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--banner={yes\|no\|auto}</code>
+      </td>
+      
+      <td align="left">
+        开启或关闭 REPL 横幅
+      </td>
+    </tr>
     
-    <td align="left">
-      Enable or disable color text
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--history-file={yes\|no}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--color={yes\|no\|auto}</code>
+      </td>
+      
+      <td align="left">
+        开启或关闭文字颜色
+      </td>
+    </tr>
     
-    <td align="left">
-      Load or save history
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--depwarn={yes\|no\|error}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--history-file={yes\|no}</code>
+      </td>
+      
+      <td align="left">
+        载入或导出历史记录
+      </td>
+    </tr>
     
-    <td align="left">
-      Enable or disable syntax and method deprecation warnings (<code>error</code> turns warnings into errors)
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--warn-overwrite={yes\|no}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--depwarn={yes\|no\|error}</code>
+      </td>
+      
+      <td align="left">
+        开启或关闭语法弃用警告，<code>error</code> 表示将弃用警告转换为错误
+      </td>
+    </tr>
     
-    <td align="left">
-      Enable or disable method overwrite warnings
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>-C</code>, <code>--cpu-target &lt;target&gt;</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--warn-overwrite={yes\|no}</code>
+      </td>
+      
+      <td align="left">
+        开启或关闭“method overwrite”警告
+      </td>
+    </tr>
     
-    <td align="left">
-      Limit usage of CPU features up to <code>&lt;target&gt;</code>; set to <code>help</code> to see the available options
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>-O</code>, <code>--optimize={0,1,2,3}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>-C</code>, <code>--cpu-target &lt;target&gt;</code>
+      </td>
+      
+      <td align="left">
+        设置 <code>&lt;target&gt;</code> 来限制使用 CPU 的某些特性；设置为 <code>help</code> 可以查看可用的选项
+      </td>
+    </tr>
     
-    <td align="left">
-      Set the optimization level (default level is 2 if unspecified or 3 if used without a level)
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>-g</code>, <code>-g &lt;level&gt;</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>-O</code>, <code>--optimize={0,1,2,3}</code>
+      </td>
+      
+      <td align="left">
+        设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。
+      </td>
+    </tr>
     
-    <td align="left">
-      Enable / Set the level of debug info generation (default level is 1 if unspecified or 2 if used without a level)
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--inline={yes\|no}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>-g</code>, <code>-g &lt;level&gt;</code>
+      </td>
+      
+      <td align="left">
+        设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。
+      </td>
+    </tr>
     
-    <td align="left">
-      Control whether inlining is permitted, including overriding <code>@inline</code> declarations
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--check-bounds={yes\|no}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--inline={yes\|no}</code>
+      </td>
+      
+      <td align="left">
+        控制是否允许函数内联，此选项会覆盖源文件中的 <code>@inline</code> 声明
+      </td>
+    </tr>
     
-    <td align="left">
-      Emit bounds checks always or never (ignoring declarations)
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--math-mode={ieee,fast}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--check-bounds={yes\|no}</code>
+      </td>
+      
+      <td align="left">
+        设置边界检查状态：始终检查或永不检查。永不检查时会忽略源文件中的相应声明
+      </td>
+    </tr>
     
-    <td align="left">
-      Disallow or enable unsafe floating point optimizations (overrides @fastmath declaration)
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--code-coverage={none\|user\|all}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--math-mode={ieee,fast}</code>
+      </td>
+      
+      <td align="left">
+        开启或关闭非安全的浮点数代数计算优化，此选项会覆盖源文件中的 @fastmath 声明
+      </td>
+    </tr>
     
-    <td align="left">
-      Count executions of source lines
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--code-coverage</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--code-coverage={none\|user\|all}</code>
+      </td>
+      
+      <td align="left">
+        对源文件中每行代码执行的次数计数
+      </td>
+    </tr>
     
-    <td align="left">
-      equivalent to <code>--code-coverage=user</code>
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--track-allocation={none\|user\|all}</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--code-coverage</code>
+      </td>
+      
+      <td align="left">
+        等价于 <code>--code-coverage=user</code>
+      </td>
+    </tr>
     
-    <td align="left">
-      Count bytes allocated by each source line
-    </td>
-  </tr>
-  
-  <tr>
-    <td align="left">
-      <code>--track-allocation</code>
-    </td>
+    <tr>
+      <td align="left">
+        <code>--track-allocation={none\|user\|all}</code>
+      </td>
+      
+      <td align="left">
+        对源文件中每行代码的内存分配计数，单位 byte
+      </td>
+    </tr>
     
-    <td align="left">
-      equivalent to <code>--track-allocation=user</code>
-    </td>
-  </tr></tbody> </table> 
-  
-  <h2>
-    Resources
-  </h2>
-  
-  <p>
-    A curated list of useful learning resources to help new users get started can be found on the <a href="https://julialang.org/learning/">learning</a> page of the main Julia web site.
-  </p>
+    <tr>
+      <td align="left">
+        <code>--track-allocation</code>
+      </td>
+      
+      <td align="left">
+        等价于 <code>--track-allocation=user</code>
+      </td>
+    </tr></tbody> </table> 
+    
+    <h2>
+      资源
+    </h2>
+    
+    <p>
+      除了本手册以外，官方网站还提供了一个有用的<a href="https://julialang.org/learning/">学习资源列表</a>来帮助新用户学习 Julia。
+    </p>
